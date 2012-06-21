@@ -17,6 +17,30 @@ According to the fine folks over at [Wikipedia](http://en.wikipedia.org/wiki/Tic
 
 from copy import deepcopy
 
+
+class HumanPlayer(object):
+    def __init__(self, game, name, marks):
+        self.game = game
+        self.my_mark = marks[0]
+        self.their_mark = marks[1]
+
+        self.name = raw_input("What's your name? ") or name
+        print "Thanks %s!\n" % self.name
+
+    def play(self):
+        play = None
+        while not play:
+            if play is not None:
+                print "Sorry, please make a valid move."
+            play = raw_input("%s, please enter your next play in \"x y\" form: " % self.name)
+
+            play = [int(x) for x in play.split(' ')]
+
+            if self.game.board[play[0]][play[1]] == ' ':
+                return play
+            else:
+                play = ''
+
 class ComputerPlayer(object):
     def __init__(self, game, name, marks, debug=False):
         self.game = game
@@ -110,6 +134,7 @@ class ComputerPlayer(object):
         if self._debug:
             print string
 
+
 class TicTacToeGame(object):
     def __init__(self, player1=None, player2=None, debug=False):
         self._debug = debug
@@ -119,19 +144,17 @@ class TicTacToeGame(object):
         self.plays = 0
 
         # Any value other than None will be interpreted as the player's name and will be assumed to be a human player
-        self.player1 = player1 if player1 is not None else ComputerPlayer(
-            game=self,
-            name='Computer Player 1',
-            marks=('x', 'o'),
-            debug=debug
-        )
 
-        self.player2 = player2 if player2 is not None else ComputerPlayer(
-            game=self,
-            name='Computer Player 2',
-            marks=('o', 'x'),
-            debug=debug
-        )
+        if player1 is None:
+            self.player1 = ComputerPlayer(game=self, name='Computer Player #1', marks=('x', 'o'), debug=debug)
+        else:
+            self.player1 = HumanPlayer(game=self, name=player1, marks=('x', 'o'))
+
+        if player2 is None:
+            self.player2 = ComputerPlayer(game=self, name='Computer Player #2', marks=('o', 'x'), debug=debug)
+        else:
+            self.player2 = ComputerPlayer(game=self, name=player2, marks=('o', 'x'))
+
 
     def play(self, player):
         """ Aggregates common play actions. """
@@ -218,5 +241,5 @@ class TicTacToeGame(object):
         return False
 
 if __name__ == "__main__":
-    game = TicTacToeGame(debug=True)
+    game = TicTacToeGame(player1='human', debug=True)
     game.start()
