@@ -146,12 +146,12 @@ class TicTacToeGame(object):
         # Any value other than None will be interpreted as the player's name and will be assumed to be a human player
 
         if player1 is None:
-            self.player1 = ComputerPlayer(game=self, name='Computer Player #1', marks=('x', 'o'), debug=debug)
+            self.player1 = ComputerPlayer(game=self, name='Computer Player 1', marks=('x', 'o'), debug=debug)
         else:
             self.player1 = HumanPlayer(game=self, name=player1, marks=('x', 'o'))
 
         if player2 is None:
-            self.player2 = ComputerPlayer(game=self, name='Computer Player #2', marks=('o', 'x'), debug=debug)
+            self.player2 = ComputerPlayer(game=self, name='Computer Player 2', marks=('o', 'x'), debug=debug)
         else:
             self.player2 = ComputerPlayer(game=self, name=player2, marks=('o', 'x'))
 
@@ -241,5 +241,5 @@ class TicTacToeGame(object):
         return False
 
 if __name__ == "__main__":
-    game = TicTacToeGame(player1='human', debug=True)
+    game = TicTacToeGame(debug=True)
     game.start()
