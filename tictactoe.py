@@ -29,14 +29,29 @@ class ComputerPlayer(object):
 class TicTacToeGame(object):
     def __init__(self, player1=None, player2=None, debug=False):
         self._debug = debug
-        self.board = [['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-']]
+        self.board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
 
         # Any value other than None will be interpreted as the player's name and will be assumed to be a human player
         self.player1 = player1 if player1 is not None else ComputerPlayer(self, 'Computer Player 1', debug)
         self.player2 = player2 if player2 is not None else ComputerPlayer(self, 'Computer Player 2', debug)
 
     def start(self):
+        self.build_board(echo=True)
         pass
+
+    def build_board(self, echo=False):
+        board = ""
+        for i, row in enumerate(self.board):
+            board += "%s|%s|%s\n" % tuple(row)
+            if i < 2:
+                board += "-----\n"
+
+        if echo:
+            print board
+        else:
+            return board
+
+
 
 if __name__ == "__main__":
     game = TicTacToeGame(debug=True)
