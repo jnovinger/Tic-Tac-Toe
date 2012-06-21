@@ -30,6 +30,8 @@ class TicTacToeGame(object):
     def __init__(self, player1=None, player2=None, debug=False):
         self._debug = debug
         self.board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.plays = 0
+        self.round = 0
 
         # Any value other than None will be interpreted as the player's name and will be assumed to be a human player
         self.player1 = player1 if player1 is not None else ComputerPlayer(self, 'Computer Player 1', debug)
@@ -37,7 +39,16 @@ class TicTacToeGame(object):
 
     def start(self):
         self.build_board(echo=True)
-        pass
+        while not self.game_is_over():
+            # tell players to go
+            #self.player1.play()
+            self.plays += 1
+            #self.player2.play()
+            self.plays += 1
+            self.round += 1
+
+            # show progress
+            self.build_board(echo=True)
 
     def build_board(self, echo=False):
         board = ""
@@ -45,13 +56,16 @@ class TicTacToeGame(object):
             board += "%s|%s|%s\n" % tuple(row)
             if i < 2:
                 board += "-----\n"
+        board += "Round: %s\nPlays: %s" % (self.round, self.plays)
 
         if echo:
             print board
         else:
             return board
 
-
+    def game_is_over(self):
+        """ Returns true if a winning move has been made. """
+        return True
 
 if __name__ == "__main__":
     game = TicTacToeGame(debug=True)

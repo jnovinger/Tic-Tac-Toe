@@ -18,8 +18,8 @@ class TwoComputerPlayerTestCase(unittest.TestCase):
 
 
     def test_build_board(self):
-        """ Make sure build_board() is behaving. """
-        self.assertEqual(self.game.build_board(), " | | \n-----\n | | \n-----\n | | \n")
+        """ Make sure build_board() is behaving. Order of tests is important, this test assumes no plays have been made. """
+        self.assertEqual(self.game.build_board(), " | | \n-----\n | | \n-----\n | | \nRound: 0\nPlays: 0")
         self.assertEqual(self.game.build_board(echo=True), None)
 
         # TODO: test echo=True output like debug below
