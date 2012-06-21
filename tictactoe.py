@@ -67,32 +67,27 @@ class TicTacToeGame(object):
         """ Returns true if a winning move has been made. """
         board = self.board
 
+        def check_line(line):
+            if (line[0] != ' ' and
+                line[0] == line[1] == line[2]):
+                return True
+
+        # check diagonal wins, start in upper left
+        if (check_line([board[0][0], board[1][1], board[2][2]]) or
+            check_line([board[0][2], board[1][1], board[2][0]])):
+            return True
+
         # check row wins
         for row in board:
-            if (row[0] != ' ' and
-                row[0] == row[1] and
-                row[1] == row[2] and
-                row[2] == row[0]):
+            if check_line(row):
                 return True
 
         # check column wins, thanks to Peter Norvig -- http://www.norvig.com/python-iaq.html
         for col in zip(*board):
-            if (col[0] != ' ' and
-                col[0] == col[1] and
-                col[1] == col[2] and
-                col[2] == col[0]):
+            if check_line(col):
                 return True
 
-        # check diagonal wins, start in upper left
-        if (board[0][0] != ' ' and
-            board[0][0] == board[1][1] and
-            board[1][1] == board[2][2]):
-            return True
-        elif (board[0][2] != ' ' and
-            board[0][2] == board[1][1] and
-            board[1][1] == board[2][0]):
-            return True
-
+        # no wins
         return False
 
 if __name__ == "__main__":
