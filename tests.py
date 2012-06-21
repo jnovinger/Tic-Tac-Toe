@@ -27,10 +27,11 @@ class ComputerPlayerTestCase(unittest.TestCase):
         self.assertEqual((2, 0), self.player2.play())
 
     def test_strategy_three(Self):
-        """ """
+        """ Strategy three not implemented yet """
         pass
 
     def test_strategy_four(self):
+        """ Strategy four not implemented yet """
         pass
 
     def test_strategy_five(self):
@@ -75,11 +76,10 @@ class TwoComputerPlayerTestCase(unittest.TestCase):
 
     def test_build_board(self):
         """ Make sure build_board() is behaving. Order of tests is important, this test assumes no plays have been made. """
-        self.assertEqual(self.game.build_board(), " | | \n-----\n | | \n-----\n | | \nPlays: 0\n")
+        expected = " | | \n-----\n | | \n-----\n | | \nPlays: 0\n"
+        self.assertEqual(self.game.build_board(), expected)
         self.assertEqual(self.game.build_board(echo=True), None)
-        self.assertEqual(sys.stdout.getvalue().rstrip(), " | | \n-----\n | | \n-----\n | | \nPlays: 0")
-
-        # TODO: test echo=True output like debug below
+        self.assertEqual(sys.stdout.getvalue().rstrip(), expected.rstrip())
 
     def test_debug(self):
         """ Make sure debug output is working correctly. Maybe this should live in it's own test case. """
