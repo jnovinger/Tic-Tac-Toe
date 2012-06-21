@@ -15,6 +15,8 @@ According to the fine folks over at [Wikipedia](http://en.wikipedia.org/wiki/Tic
     8) Empty side: Play in a middle square on any of the 4 sides.
 """
 
+from copy import deepcopy
+
 class ComputerPlayer(object):
     def __init__(self, game, name, marks, debug=False):
         self.game = game
@@ -27,11 +29,25 @@ class ComputerPlayer(object):
 
     def _find_wins(self, me=True):
         """ Find any winning plays, for me if ``me`` is True, else for the other player. """
-        return tuple()
+        wins = []
+
+        mark = self.my_mark if me else self.their_mark
+
+        # make a local copy to mess with
+        for i, row in enumerate(self.game.board):
+            for j, col in enumerate(row):
+                board = deepcopy(self.game.board)
+                if col == ' ':
+                    board[i][j] = mark
+                    if self.game.game_is_over(board=board):
+                        wins.append((i, j))
+
+        return wins
 
     def _find_forks(self, me=True):
         """ Find any plays that will result in a fork. Find for me if ``me`` is True, else for the other player. """
-        return tuple()
+        forks = []
+        return forks
 
     def play(self):
         """
@@ -45,13 +61,13 @@ class ComputerPlayer(object):
 
         # 1) find any winning moves and play them
         my_wins = self._find_wins()
-        if my_wins:
-            pass
+        for win in my_wins:
+            return win
 
         # 2) else, block the other player's win
         their_wins = self._find_wins(me=False)
-        if their_wins:
-            pass
+        for win in their_wins:
+            return win
 
         # 3) else, fork
         my_forks = self._find_forks()
@@ -101,7 +117,6 @@ class TicTacToeGame(object):
                       [' ', ' ', ' '],
                       [' ', ' ', ' ']]
         self.plays = 0
-        self.round = 0
 
         # Any value other than None will be interpreted as the player's name and will be assumed to be a human player
         self.player1 = player1 if player1 is not None else ComputerPlayer(
@@ -125,14 +140,28 @@ class TicTacToeGame(object):
         self.plays += 1
         self.build_board(echo=True)
 
+        winner = self.game_is_over()
+        if winner:
+            if winner == player.my_mark:
+                return player
+            if winner == 'draw':
+                return winner
+        return False
+
     def start(self):
         """ The main game loop. """
         self.build_board(echo=True)
-        while not self.game_is_over():
-            # tell players to go
-            self.play(self.player1)
-            self.play(self.player2)
-            self.round += 1
+        player = None
+        winner = False
+        while not winner:
+            # switch and play
+            player = self.player1 if player is not self.player1 else self.player2
+            winner = self.play(player)
+
+        if winner in [self.player1, self.player2]:
+            print "Yay, %s won!" % winner.name
+        else:
+            print "Sorry, guess nobody wins."
 
     def build_board(self, echo=False):
         """ Build the board, either for display or internal use. """
@@ -141,16 +170,26 @@ class TicTacToeGame(object):
             board += "%s|%s|%s\n" % tuple(row)
             if i < 2:
                 board += "-----\n"
-        board += "Round: %s\nPlays: %s" % (self.round, self.plays)
+        board += "Plays: %s\n" % self.plays
 
         if echo:
             print board
         else:
             return board
 
-    def game_is_over(self):
-        """ Returns true if a winning move has been made. """
-        board = self.board
+    def game_is_over(self, board=None):
+        """
+        Accepts:
+            ``board``::
+                optional, default: self.board
+                useful for AI players to check their moves
+
+        Returns:
+            - the winning mark, if a winning move has been made;
+            - False, if no winning move has been made and the board is not full;
+            - 'draw' if there no winning move has been made and the board is full.
+        """
+        board = board or self.board
 
         def check_line(line):
             if (' ' != line[0] == line[1] == line[2]):
@@ -159,17 +198,21 @@ class TicTacToeGame(object):
         # check diagonal wins, start in upper left
         if (check_line([board[0][0], board[1][1], board[2][2]]) or
             check_line([board[0][2], board[1][1], board[2][0]])):
-            return True
+            return board[1][1]
 
         # check row wins
         for row in board:
             if check_line(row):
-                return True
+                return row[0]
 
         # check column wins, thanks to Peter Norvig -- http://www.norvig.com/python-iaq.html
         for col in zip(*board):
             if check_line(col):
-                return True
+                return col[0]
+
+        # if the board is full
+        if self.plays > 8:
+            return 'draw'
 
         # no wins
         return False
