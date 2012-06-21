@@ -37,5 +37,39 @@ class TwoComputerPlayerTestCase(unittest.TestCase):
         finally:
             sys.stdout = std_out
 
+    def test_game_is_over(self):
+        """ Make sure that we can recognize when a game is over. """
+
+        # test non-wins
+        self.game.board = [[' ',' ',' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.assertFalse(self.game.game_is_over())
+        self.game.board = [['x','o','x'], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.assertFalse(self.game.game_is_over())
+        self.game.board = [['x',' ','x'], [' ', 'o', ' '], [' ', ' ', ' ']]
+        self.assertFalse(self.game.game_is_over())
+
+        # test row wins
+        self.game.board = [['x','x','x'], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.assertTrue(self.game.game_is_over())
+        self.game.board = [[' ', ' ', ' '], ['x','x','x'], [' ', ' ', ' ']]
+        self.assertTrue(self.game.game_is_over())
+        self.game.board = [[' ', ' ', ' '], [' ', ' ', ' '], ['x','x','x']]
+        self.assertTrue(self.game.game_is_over())
+
+        # test col wins
+        self.game.board = [['x',' ',' '], ['x', ' ', ' '], ['x', ' ', ' ']]
+        self.assertTrue(self.game.game_is_over())
+        self.game.board = [[' ', 'x', ' '], [' ','x',' '], [' ', 'x', ' ']]
+        self.assertTrue(self.game.game_is_over())
+        self.game.board = [[' ', ' ', 'x'], [' ', ' ', 'x'], [' ',' ','x']]
+        self.assertTrue(self.game.game_is_over())
+
+        # test diagonal wins
+        self.game.board = [['x', ' ', ' '], [' ','x',' '], [' ', ' ', 'x']]
+        self.assertTrue(self.game.game_is_over())
+        self.game.board = [[' ', ' ', 'x'], [' ', 'x', ' '], ['x',' ',' ']]
+        self.assertTrue(self.game.game_is_over())
+
+
 if __name__ == "__main__":
     unittest.main()
